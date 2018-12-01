@@ -2,6 +2,13 @@
 
 Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network.
 
+## Setup
+
+
+## Running
+
+
+
 
 #### References
 

@@ -2,7 +2,6 @@ import matplotlib
 import matplotlib.animation
 import matplotlib.pyplot
 import networkx
-import scipy
 
 
 class GraphAnimation(object):

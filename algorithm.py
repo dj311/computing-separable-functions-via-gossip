@@ -3,7 +3,7 @@ import numpy
 import scipy
 
 
-def comp(graph, values, functions, new_estimate_callback):
+def comp(graph, values, functions, updated_estimates_callback):
     """
     The COMP algorithm as described in "Computing Separable Functions via
     Gossip".
@@ -44,7 +44,7 @@ def comp(graph, values, functions, new_estimate_callback):
     assert all(value >= 1 for value in values)
 
     # Setup parameters
-    n = len(nodes)
+    n = len(graph.nodes)
     r = n  # arbitrarly selected for ease
     error_threshold = 0.05  # epsilon in the paper
     allowed_failure_prob = 0.05  # delta in the paper
@@ -75,18 +75,17 @@ def comp(graph, values, functions, new_estimate_callback):
 
     # our starting estimates are just the values (xi) of each node
     estimates = [values[node] for node in graph.nodes]
-    new_estimates_callback(estimates)
 
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
-    for time in range(max_time):
+    for time in range(1000): # max_time):
         messages, updated_node = spread(graph, messages)
 
         # slight optimisation: we only need to update the estimates of the node
-        # which has been updated
-        estimates[i] = node_estimate(messages[i])
+        # which has recieved messages in this timestep updated
+        estimates[updated_node] = node_estimate(messages[updated_node], r)
 
-        new_estimates_callback(estimates)
+        updated_estimates_callback(estimates)
 
     # w(node, time) maps each node to an r-length vector of
     # w = [W[node] for node in nodes]
@@ -123,15 +122,15 @@ def spread(graph, messages):
 
     # TODO: figure out how to pick receiver node. This is probably dependant on
     # the time model so check there. For now, pick one uniform random:
-    reciever = numpy.random.choice(graph.nodes)
+    receiver = numpy.random.choice(graph.nodes)
 
     # Step 1: Pick node to sends it's messages to the receiver.
     # Select this node uniformly from all nodes sharing edge with the receiver
     # node.
-    neighbours = graph.neighbors(reciever)
+    neighbours = list(graph.neighbors(receiver))
     sender = numpy.random.choice(neighbours)
 
-    messages[reciever] += messages[sender]
+    messages[receiver] += messages[sender]
 
     return messages, receiver
 
@@ -160,8 +159,8 @@ def estimate_minimum_W(node_messages, l):
     return min(Wls)
 
 
-def node_estimate(node_messages):
-    min_Ws = [estimate_minimum_Wl(node_messages, l) for l in range(r)]
+def node_estimate(node_messages, r):
+    min_Ws = [estimate_minimum_W(node_messages, l) for l in range(r)]
     F_estimate = r/sum(min_Ws)
     return F_estimate
 

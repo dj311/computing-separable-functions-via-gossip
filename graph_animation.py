@@ -10,15 +10,18 @@ class GraphAnimation(object):
         self.frames = []
         self.fps = fps
 
-    def add_frame(self, graph, node_colors):
+    def add_frame(self, graph, node_positions, node_colors):
         axes = matplotlib.axes.Axes(self.figure, (0, 0, 1, 1))
         self.figure.add_axes(axes)
 
         # use nodes as their own positions, but scale into range -1 to 1:
-        max_x = max(x for x, y in graph.nodes)
-        max_y = max(x for x, y in graph.nodes)
+        max_x = max(x for x, y in node_positions)
+        max_y = max(x for x, y in node_positions)
 
-        pos = {(x, y): (x/max_x, y/max_y) for x, y in graph.nodes}
+        pos = {
+            node: (position[0]/max_x, position[1]/max_y)
+            for node, position in zip(graph.nodes, node_positions)
+        }
 
         networkx.draw_networkx(
             graph,
@@ -37,7 +40,7 @@ class GraphAnimation(object):
 
 
 if __name__ == '__main__':
-    # Example ----------------------------------------------------------------------
+    # Example ------------------------------------------------------------------
 
     # Use NetworkX for graphs
     #   https://networkx.github.io/documentation/stable/tutorial.html

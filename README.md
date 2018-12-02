@@ -2,14 +2,15 @@
 
 Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network.
 
-![Demo Video](./demo-image.png)
+## Demo
+[<img src="./demo-image.png">](https://youtube.com/todo-upload-a-video)
 
 ## Setup
 For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be installed and working on your system. Besides that, it's the usual Python affair:
   1. Make a virtualenv: `python3 -m venv env`.
   2. Install dependencies: `pip install -r requirements.txt`.
 
-## Running the demo
+## Generating the Demo
   1. Activate the virtualenv in your fave shell: `source ./env/bin/activate`.
   2. Run the demo script: `python3 ./averaging_colors.py`.
   3. Wait a couple of minutes and the file `./averaging_colors.mp4` should appear.

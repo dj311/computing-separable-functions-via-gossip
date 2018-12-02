@@ -1,11 +1,10 @@
-import random
 import itertools
-import networkx
-import numpy
-import scipy
-
 import matplotlib
 import matplotlib.pyplot
+import networkx
+import numpy
+import random
+import scipy
 
 
 def draw_frame(figure, graph, node_colors):
@@ -65,29 +64,17 @@ node_colors = [
     y, y, y, y, y, y, y, y, b, b, b, b, b, b, b, b, b, b, r, r,
 ]
 
-animation_figure = matplotlib.pyplot.figure(
-    figsize=(10, 10),
-    dpi=150,
-)
+figure = matplotlib.pyplot.figure(figsize=(10, 10), dpi=150)
 
 frames = []
 for _ in range(200):
     random.shuffle(node_colors)
     frames.append(
-        [draw_frame(animation_figure, graph, node_colors)]
+        [draw_frame(figure, graph, node_colors)]
     )
 
-animation = matplotlib.animation.ArtistAnimation(
-    animation_figure,
-    frames,
-)
-
-
-animation.save(
-    'test-ani.mp4',
-    fps=5,
-    extra_args=['-vcodec', 'libx264']
-)
+animation = matplotlib.animation.ArtistAnimation(figure, frames)
+animation.save('animation.mp4', fps=5, extra_args=['-vcodec', 'libx264'])
 
 # Exponential Variable:
 # scipy.stats.expon (https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.expon.html)

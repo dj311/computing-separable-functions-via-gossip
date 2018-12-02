@@ -10,16 +10,16 @@ import graph_animation
 graph = networkx.generators.grid_2d_graph(20, 20)
 
 # Give nodes starting colors:
-b = 0x000011
-g = 0x001100
-y = 0x111100
-r = 0x110000
+b = 0xFFFFFF
+g = 0xFFFFFF
+y = 0x111111
+r = 0x111111
 
 node_colors = [
-    b, b, b, b, y, y, y, y, b, b, b, r, b, r, b, b, b, y, y, y,
-    b, b, b, b, y, y, y, y, b, b, b, b, b, b, b, b, b, y, y, y,
-    b, b, b, b, y, y, y, r, b, b, b, b, b, r, b, b, b, b, b, b,
-    b, b, b, b, y, y, y, y, y, y, b, b, b, b, b, b, b, b, b, b,
+    b, b, g, g, y, y, y, y, b, b, b, r, b, r, b, b, b, y, y, y,
+    b, b, g, g, y, y, y, y, b, b, b, b, b, b, b, b, b, y, y, y,
+    b, b, r, r, y, y, y, r, b, b, b, b, b, r, b, b, b, b, b, b,
+    b, b, r, r, y, y, y, y, y, y, b, b, b, b, b, b, b, b, b, b,
     b, b, b, b, y, y, y, y, y, y, b, b, b, b, b, b, b, b, b, b,
     b, b, b, b, y, y, y, y, y, y, y, y, y, y, b, b, b, b, g, g,
     b, b, b, b, y, y, y, y, y, y, y, y, y, y, y, b, b, g, g, g,
@@ -47,16 +47,17 @@ graph = networkx.convert_node_labels_to_integers(graph)
 
 # steal the tuples as position values, then rename the nodes
 
-animation = graph_animation.GraphAnimation(fps=30)
+animation = graph_animation.GraphAnimation(fps=10)
 animation.add_frame(graph, node_positions, node_colors)
+
+def handle_estimate_update(node_colors):
+    animation.add_frame(graph, node_positions, node_colors)
 
 algorithm.comp(
     graph,
     node_colors,
     functions,
-    lambda node_colors: animation.add_frame(graph, node_positions, node_colors),
+    handle_estimate_update,
 )
-
-import pdb; pdb.set_trace()
 
 animation.render('animation.mp4')

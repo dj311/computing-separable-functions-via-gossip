@@ -1,3 +1,4 @@
+import copy
 import math
 import numpy
 import scipy
@@ -76,14 +77,16 @@ def comp(graph, values, functions, updated_estimates_callback):
     # our starting estimates are just the values (xi) of each node
     estimates = [values[node] for node in graph.nodes]
 
+    import pdb; pdb.set_trace()
+
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
-    for time in range(1000): # max_time):
-        messages, updated_node = spread(graph, messages)
+    for time in range(100): #max_time):
+        messages = spread(graph, messages)
 
-        # slight optimisation: we only need to update the estimates of the node
-        # which has recieved messages in this timestep updated
-        estimates[updated_node] = node_estimate(messages[updated_node], r)
+        estimates = [
+            node_estimate(messages[node], r) for node in graph.nodes
+        ]
 
         updated_estimates_callback(estimates)
 
@@ -119,20 +122,18 @@ def spread(graph, messages):
         Where t- represents the time immediately before t
         and t+ represents the time immediately after t.
     """
+    previous_messages = copy.deepcopy(messages)
 
-    # TODO: figure out how to pick receiver node. This is probably dependant on
-    # the time model so check there. For now, pick one uniform random:
-    receiver = numpy.random.choice(graph.nodes)
+    for receiver in graph.nodes:
+        # Step 1: Pick node to sends it's messages to the receiver.
+        # Select this node uniformly from all nodes sharing edge with the
+        # receiver node.
+        neighbours = list(graph.neighbors(receiver))
+        sender = numpy.random.choice(neighbours)
 
-    # Step 1: Pick node to sends it's messages to the receiver.
-    # Select this node uniformly from all nodes sharing edge with the receiver
-    # node.
-    neighbours = list(graph.neighbors(receiver))
-    sender = numpy.random.choice(neighbours)
+        messages[receiver] += previous_messages[sender]
 
-    messages[receiver] += messages[sender]
-
-    return messages, receiver
+    return messages
 
 
 def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
@@ -147,8 +148,8 @@ def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
     """
     return math.ceil(
         math.pow(error_threshold, -2)
-        * (1 + math.log2(math.pow(failure_prob, -1)))
-        * (math.log2(num_nodes) + math.log2(math.pow(failure_prob, -1)))
+        * (1 + math.pow(math.log(failure_prob), -1))
+        * (math.log(num_nodes) + math.pow(math.log(failure_prob), -1))
         * dimensions
         * math.pow(num_nodes, 1/dimensions)
     )
@@ -162,5 +163,7 @@ def estimate_minimum_W(node_messages, l):
 def node_estimate(node_messages, r):
     min_Ws = [estimate_minimum_W(node_messages, l) for l in range(r)]
     F_estimate = r/sum(min_Ws)
+    # cheeky: for averaging, divide by our sum
+    F_estimate = F_estimate/len(node_messages)
     return F_estimate
 

@@ -1,3 +1,4 @@
+import math
 import numpy
 import scipy
 
@@ -46,6 +47,8 @@ def comp(values, functions):
     nodes = range(len(values))
     n = len(nodes)
     r = n  # arbitrarly selected for ease
+    error_threshold = 0.05  # epsilon in the paper
+    allowed_failure_prob = 0.05  # delta in the paper
 
     # Step 0: Nothing to do since we've been given the values list
 
@@ -71,16 +74,10 @@ def comp(values, functions):
 
     estimates = [values[node] for node in nodes]
 
-    for _ in range(1000):
-        num_inaccurate_estimates = len([
-            estimate for estimate in estimates
-            if (1+epsilon)* <= estimate <= (1-epsilon)*
-        ])
-
-
+    # calculate the upper bound of time to run and stop on that
+    max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
+    for time in range(max_time):
         spread(nodes, edges, messages)
-
-
 
 
     # w(node, time) maps each node to an r-length vector of 
@@ -125,3 +122,20 @@ def spread(nodes, edges, messages):
     sender = numpy.random.random_integers(0, n-1)
 
     pass
+
+
+
+def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
+    """
+    Calculates the upper bound of time steps required for a <dimensions>-d grid
+    network, consisting of <num_nodes> nodes to compute the value of a function
+    with probability less.
+    """
+    return math.ceil(
+        math.pow(error_threshold, -2)
+        * (1 + math.log2(math.pow(failure_prob, -1)))
+        * (math.log2(num_nodes) + math.log2(math.pow(failure_prob, -1)))
+        * dimensions
+        * math.pow(num_nodes, 1/dimensions)
+    )
+

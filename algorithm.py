@@ -47,13 +47,21 @@ def comp(values, functions):
     n = len(nodes)
     r = n  # arbitrarly selected for ease
 
-    # Create and populare W, an n by r array mapping [node][l]
-    W = [[None] * r] * n]
+    # Step 0: Nothing to do since we've been given the values list
+
+    # Step 1: Create and populate W, an n by r array which maps each
+    # W[node][l=1...r] to a sample from Exp with rate f(i, xi)).
+    W = [None] * n
     for node in nodes:
-        for l in range(r):
-            W[node][l] = scipy.stats.expon
+        # Generate f(i, xi)
+        fi = functions[node]
+        xi = values[node]
 
+        rate = fi(xi)
+        mean = 1/rate  # numpy parameterizes exp by it's mean (= 1/rate)
+        samples = numpy.random.exponential(mean, r)
 
+        W[node] = samples
 
 
 

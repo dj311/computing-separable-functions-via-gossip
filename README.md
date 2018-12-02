@@ -2,6 +2,8 @@
 
 Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network.
 
+![Demo Video](./demo-image.png)
+
 ## Setup
 For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be installed and working on your system. Besides that, it's the usual Python affair:
   1. Make a virtualenv: `python3 -m venv env`.

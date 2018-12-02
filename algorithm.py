@@ -3,7 +3,7 @@ import numpy
 import scipy
 
 
-def comp(values, functions):
+def comp(graph, values, functions):
     """
     The COMP algorithm as described in "Computing Seperable Functions via
     Gossip".
@@ -44,7 +44,6 @@ def comp(values, functions):
     assert all(value >= 1 for value in values)
 
     # Setup parameters
-    nodes = range(len(values))
     n = len(nodes)
     r = n  # arbitrarly selected for ease
     error_threshold = 0.05  # epsilon in the paper
@@ -55,7 +54,7 @@ def comp(values, functions):
     # Step 1: Create and populate W, an n by r array which maps each
     # W[node][l=1...r] to a sample from Exp with rate f(i, xi)).
     W = [None] * n
-    for node in nodes:
+    for node in graph.nodes:
         # Generate f(i, xi)
         fi = functions[node]
         xi = values[node]
@@ -70,21 +69,25 @@ def comp(values, functions):
 
     # messages contains the message m(i) for each node i which it starts at time
     # 0. This is node i's set of r samples from it's Exp(f(i, xi)) distribution.
-    messages = [W[node] for node in nodes]
-
-    estimates = [values[node] for node in nodes]
+    messages = [
+        [W[node]] for node in graph.nodes
+    ]
+    estimates = [
+        values[node] for node in graph.nodes
+    ]
 
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
     for time in range(max_time):
-        spread(nodes, edges, messages)
+        messages = spread(graph, messages)
 
+        # so now messages
 
-    # w(node, time) maps each node to an r-length vector of 
+    # w(node, time) maps each node to an r-length vector of
     # w = [W[node] for node in nodes]
 
 
-def spread(nodes, edges, messages):
+def spread(graph, messages):
     """
     The SPREAD algorithm as described in "Computing Seperable Functions via
     Gossip". It's a randomized gossip algorithm which aims to ...
@@ -112,24 +115,27 @@ def spread(nodes, edges, messages):
         Where t- represents the time immediately before t
         and t+ represents the time immediately after t.
     """
-    n = len(nodes)
 
     # TODO: figure out how to pick receiver node.
     # For now, pick one uniform random:
-    reciever = numpy.random.random_integers(0, n-1)
+    reciever = numpy.random.choice(graph.nodes)
 
-    # Step 1: Pick node, u, which sends messages
-    sender = numpy.random.random_integers(0, n-1)
+    # Step 1: Pick node to sends it's messages to the receiver.
+    # Select this node uniformly from all nodes sharing edge with the receiver
+    # node.
+    neighbours = graph.neighbors(reciever)
+    sender = numpy.random.choice(neighbours)
 
-    pass
+    messages[reciever] += messages[sender]
 
+    return messages
 
 
 def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
     """
     Calculates the upper bound of time steps required for a <dimensions>-d grid
     network, consisting of <num_nodes> nodes to compute the value of a function
-    with probability less.
+    with probability less...
     """
     return math.ceil(
         math.pow(error_threshold, -2)
@@ -139,3 +145,5 @@ def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
         * math.pow(num_nodes, 1/dimensions)
     )
 
+
+def calculate_estimate():

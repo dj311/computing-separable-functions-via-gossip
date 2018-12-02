@@ -22,7 +22,7 @@ def comp(values, functions):
          exponential with rate f(i, xi) i.e. with mean 1/f(i, xi).
 
       2. Each node i computes, for l={1, ..., r} an estimate
-         W_min_estimate(i, l) the of the minimum:
+         W_min_estimate(i, l) of the minimum W defined as:
 
              W_min(l) = min(i=1...n)[W(i, l)].
 
@@ -63,12 +63,42 @@ def comp(values, functions):
 
         W[node] = samples
 
+    # Step 2: Spread the information using magic
+
+    # messages contains the message m(i) for each node i which it starts at time
+    # 0. This is node i's set of r samples from it's Exp(f(i, xi)) distribution.
+    messages = [W[node] for node in nodes]
+
+    estimates = [values[node] for node in nodes]
+
+    for _ in range(1000):
+        num_inaccurate_estimates = len([
+            estimate for estimate in estimates
+            if (1+epsilon)* <= estimate <= (1-epsilon)*
+        ])
 
 
-def spread():
+        spread(nodes, edges, messages)
+
+
+
+
+    # w(node, time) maps each node to an r-length vector of 
+    # w = [W[node] for node in nodes]
+
+
+def spread(nodes, edges, messages):
     """
     The SPREAD algorithm as described in "Computing Seperable Functions via
-    Gossip". Takes in ... . Returns ... .
+    Gossip". It's a randomized gossip algorithm which aims to ...
+
+    Takes in:
+      - nodes :: list of nodes indexed 1...n.
+      - edges :: list of graph edges mapping nodes to one another.
+      - messages :: list indexed by node, containing the list of messages the
+        node has received.
+
+    Returns ... .
 
     Algorithm:
         When a node i initiates a communication at time t:
@@ -85,5 +115,13 @@ def spread():
         Where t- represents the time immediately before t
         and t+ represents the time immediately after t.
     """
+    n = len(nodes)
+
+    # TODO: figure out how to pick receiver node.
+    # For now, pick one uniform random:
+    reciever = numpy.random.random_integers(0, n-1)
+
+    # Step 1: Pick node, u, which sends messages
+    sender = numpy.random.random_integers(0, n-1)
 
     pass

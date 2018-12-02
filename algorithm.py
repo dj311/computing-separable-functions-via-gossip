@@ -3,9 +3,9 @@ import numpy
 import scipy
 
 
-def comp(graph, values, functions):
+def comp(graph, values, functions, new_estimate_callback):
     """
-    The COMP algorithm as described in "Computing Seperable Functions via
+    The COMP algorithm as described in "Computing Separable Functions via
     Gossip".
     - Takes in a list of per node measurements (values) and per node
       functions (functions).
@@ -55,11 +55,11 @@ def comp(graph, values, functions):
     # W[node][l=1...r] to a sample from Exp with rate f(i, xi)).
     W = [None] * n
     for node in graph.nodes:
-        # Generate f(i, xi)
-        fi = functions[node]
-        xi = values[node]
+        # Generate f_i(x_i)
+        f = functions[node]
+        x = values[node]
 
-        rate = fi(xi)
+        rate = f(x)
         mean = 1/rate  # numpy parameterizes exp by it's mean (= 1/rate)
         samples = numpy.random.exponential(mean, r)
 
@@ -72,16 +72,21 @@ def comp(graph, values, functions):
     messages = [
         [W[node]] for node in graph.nodes
     ]
-    estimates = [
-        values[node] for node in graph.nodes
-    ]
+
+    # our starting estimates are just the values (xi) of each node
+    estimates = [values[node] for node in graph.nodes]
+    new_estimates_callback(estimates)
 
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
     for time in range(max_time):
-        messages = spread(graph, messages)
+        messages, updated_node = spread(graph, messages)
 
-        # so now messages
+        # slight optimisation: we only need to update the estimates of the node
+        # which has been updated
+        estimates[i] = node_estimate(messages[i])
+
+        new_estimates_callback(estimates)
 
     # w(node, time) maps each node to an r-length vector of
     # w = [W[node] for node in nodes]
@@ -116,8 +121,8 @@ def spread(graph, messages):
         and t+ represents the time immediately after t.
     """
 
-    # TODO: figure out how to pick receiver node.
-    # For now, pick one uniform random:
+    # TODO: figure out how to pick receiver node. This is probably dependant on
+    # the time model so check there. For now, pick one uniform random:
     reciever = numpy.random.choice(graph.nodes)
 
     # Step 1: Pick node to sends it's messages to the receiver.
@@ -128,7 +133,7 @@ def spread(graph, messages):
 
     messages[reciever] += messages[sender]
 
-    return messages
+    return messages, receiver
 
 
 def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
@@ -136,6 +141,10 @@ def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
     Calculates the upper bound of time steps required for a <dimensions>-d grid
     network, consisting of <num_nodes> nodes to compute the value of a function
     with probability less...
+
+    Based on analysis in section 5.3 of the paper.
+
+    TODO: this could be plotted as error_threshold and failure_prob vary
     """
     return math.ceil(
         math.pow(error_threshold, -2)
@@ -146,4 +155,13 @@ def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
     )
 
 
-def calculate_estimate():
+def estimate_minimum_W(node_messages, l):
+    Wls = [Ws[l] for Ws in node_messages]
+    return min(Wls)
+
+
+def node_estimate(node_messages):
+    min_Ws = [estimate_minimum_Wl(node_messages, l) for l in range(r)]
+    F_estimate = r/sum(min_Ws)
+    return F_estimate
+

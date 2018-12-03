@@ -3,7 +3,8 @@
 Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network.
 
 ## Demo
-[<img src="./demo-image.png">](https://youtube.com/todo-upload-a-video)
+[<img src="./demo-image.png">](https://youtu.be/XNfz9ME3WEg)
+[(dark)](https://youtu.be/q6SnDiH9POw)
 
 ## Setup
 For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be installed and working on your system. Besides that, it's the usual Python affair:

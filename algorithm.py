@@ -70,19 +70,15 @@ def comp(graph, values, functions, updated_estimates_callback):
 
     # messages contains the message m(i) for each node i which it starts at time
     # 0. This is node i's set of r samples from it's Exp(f(i, xi)) distribution.
-    messages = [
-        [W[node]] for node in graph.nodes
-    ]
+    messages = [W[node] for node in graph.nodes]
 
     # our starting estimates are just the values (xi) of each node
     estimates = [values[node] for node in graph.nodes]
 
-    import pdb; pdb.set_trace()
-
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
     for time in range(100): #max_time):
-        messages = spread(graph, messages)
+        messages = spread(graph, messages, r)
 
         estimates = [
             node_estimate(messages[node], r) for node in graph.nodes
@@ -94,7 +90,7 @@ def comp(graph, values, functions, updated_estimates_callback):
     # w = [W[node] for node in nodes]
 
 
-def spread(graph, messages):
+def spread(graph, messages, r):
     """
     The SPREAD algorithm as described in "Computing Seperable Functions via
     Gossip". It's a randomized gossip algorithm which aims to ...
@@ -131,7 +127,11 @@ def spread(graph, messages):
         neighbours = list(graph.neighbors(receiver))
         sender = numpy.random.choice(neighbours)
 
-        messages[receiver] += previous_messages[sender]
+        for l in range(r):
+            messages[receiver][l] = min(
+                previous_messages[receiver][l],
+                previous_messages[sender][l],
+            )
 
     return messages
 
@@ -154,16 +154,9 @@ def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
         * math.pow(num_nodes, 1/dimensions)
     )
 
-
-def estimate_minimum_W(node_messages, l):
-    Wls = [Ws[l] for Ws in node_messages]
-    return min(Wls)
-
-
 def node_estimate(node_messages, r):
-    min_Ws = [estimate_minimum_W(node_messages, l) for l in range(r)]
+    min_Ws = node_messages
     F_estimate = r/sum(min_Ws)
     # cheeky: for averaging, divide by our sum
-    F_estimate = F_estimate/len(node_messages)
+    # F_estimate = F_estimate/len(node_messages)
     return F_estimate
-

@@ -11,6 +11,13 @@ class GraphAnimation(object):
         self.fps = fps
 
     def add_frame(self, graph, node_positions, node_colors):
+        # convert node colors to black and white
+        import pdb; pdb.set_trace()
+        node_colors = [
+            matplotlib.colors.to_rgb((color/255, color/255, color/255))
+            for color in node_colors
+        ]
+
         axes = matplotlib.axes.Axes(self.figure, (0, 0, 1, 1))
         self.figure.add_axes(axes)
 

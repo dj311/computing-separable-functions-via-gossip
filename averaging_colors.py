@@ -10,10 +10,10 @@ import graph_animation
 graph = networkx.generators.grid_2d_graph(20, 20)
 
 # Give nodes starting colors:
-b = 0xFFFFFF
-g = 0xFFFFFF
-y = 0x111111
-r = 0x111111
+b = 1.0
+g = 1.0
+y = 255.0
+r = 255.0
 
 node_colors = [
     b, b, g, g, y, y, y, y, b, b, b, r, b, r, b, b, b, y, y, y,

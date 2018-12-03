@@ -12,7 +12,6 @@ class GraphAnimation(object):
 
     def add_frame(self, graph, node_positions, node_colors):
         # convert node colors to black and white
-        import pdb; pdb.set_trace()
         node_colors = [
             matplotlib.colors.to_rgb((color/255, color/255, color/255))
             for color in node_colors

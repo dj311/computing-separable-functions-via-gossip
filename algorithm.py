@@ -158,5 +158,5 @@ def node_estimate(node_messages, r):
     min_Ws = node_messages
     F_estimate = r/sum(min_Ws)
     # cheeky: for averaging, divide by our sum
-    # F_estimate = F_estimate/len(node_messages)
+    F_estimate = F_estimate/len(node_messages)
     return F_estimate

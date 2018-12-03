@@ -47,7 +47,7 @@ graph = networkx.convert_node_labels_to_integers(graph)
 
 # steal the tuples as position values, then rename the nodes
 
-animation = graph_animation.GraphAnimation(fps=10)
+animation = graph_animation.GraphAnimation(fps=2, dark=True)
 animation.add_frame(graph, node_positions, node_colors)
 
 def handle_estimate_update(sum_estimates, num_nodes_estimates):

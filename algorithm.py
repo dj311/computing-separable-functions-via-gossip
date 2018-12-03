@@ -90,7 +90,7 @@ def comp(graph, values, functions, updated_estimates_callback):
 
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
-    for time in range(100): #max_time):
+    for time in range(150): #max_time):
         messages = spread(graph, messages, r)
 
         estimates = [

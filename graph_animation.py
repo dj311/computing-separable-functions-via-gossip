@@ -5,8 +5,16 @@ import networkx
 
 
 class GraphAnimation(object):
-    def __init__(self, fps=30):
-        self.figure = matplotlib.pyplot.figure(figsize=(10, 10), dpi=150)
+    def __init__(self, fps=30, dark=False):
+        self.dark = dark
+        if self.dark:
+            matplotlib.pyplot.rcParams['axes.facecolor']='black'
+            matplotlib.pyplot.rcParams['savefig.facecolor']='black'
+
+        self.figure = matplotlib.pyplot.figure(
+            figsize=(10, 10),
+            dpi=150,
+        )
         self.frames = []
         self.fps = fps
 
@@ -55,6 +63,7 @@ class GraphAnimation(object):
             ax=axes,
             with_labels=False,
             node_color=node_colors,
+            edge_color='white' if self.dark else 'black',
         )
 
         self.frames.append([axes])

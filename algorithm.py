@@ -50,6 +50,8 @@ def comp(graph, values, functions, updated_estimates_callback):
     error_threshold = 0.05  # epsilon in the paper
     allowed_failure_prob = 0.05  # delta in the paper
 
+    n_values = [1]*n
+
     # Step 0: Nothing to do since we've been given the values list
 
     # Step 1: Create and populate W, an n by r array which maps each
@@ -61,19 +63,30 @@ def comp(graph, values, functions, updated_estimates_callback):
         x = values[node]
 
         rate = f(x)
-        mean = 1/rate  # numpy parameterizes exp by it's mean (= 1/rate)
+        mean = 1.0/rate  # numpy parameterizes exp by it's mean (= 1/rate)
         samples = numpy.random.exponential(mean, r)
 
         W[node] = samples
+
+    n_W = [None] * n
+    for node in graph.nodes:
+        x = n_values[node]
+        rate = x
+        mean = 1.0/rate  # numpy parameterizes exp by it's mean (= 1/rate)
+        samples = numpy.random.exponential(mean, r)
+
+        n_W[node] = samples
 
     # Step 2: Spread the information using magic
 
     # messages contains the message m(i) for each node i which it starts at time
     # 0. This is node i's set of r samples from it's Exp(f(i, xi)) distribution.
     messages = [W[node] for node in graph.nodes]
+    n_messages = [n_W[node] for node in graph.nodes]
 
     # our starting estimates are just the values (xi) of each node
     estimates = [values[node] for node in graph.nodes]
+    n_estimates = [n_values[node] for node in graph.nodes]
 
     # calculate the upper bound of time to run and stop on that
     max_time = upper_bound_on_grid(2, n, error_threshold, allowed_failure_prob)
@@ -84,7 +97,12 @@ def comp(graph, values, functions, updated_estimates_callback):
             node_estimate(messages[node], r) for node in graph.nodes
         ]
 
-        updated_estimates_callback(estimates)
+        n_messages = spread(graph, n_messages, r)
+        n_estimates = [
+            node_estimate(n_messages[node], r) for node in graph.nodes
+        ]
+
+        updated_estimates_callback(estimates, n_estimates)
 
     # w(node, time) maps each node to an r-length vector of
     # w = [W[node] for node in nodes]
@@ -118,7 +136,10 @@ def spread(graph, messages, r):
         Where t- represents the time immediately before t
         and t+ represents the time immediately after t.
     """
-    previous_messages = copy.deepcopy(messages)
+    previous_messages = [
+        [Wl for Wl in node_messages]
+        for node_messages in messages
+    ]
 
     for receiver in graph.nodes:
         # Step 1: Pick node to sends it's messages to the receiver.
@@ -157,6 +178,4 @@ def upper_bound_on_grid(dimensions, num_nodes, error_threshold, failure_prob):
 def node_estimate(node_messages, r):
     min_Ws = node_messages
     F_estimate = r/sum(min_Ws)
-    # cheeky: for averaging, divide by our sum
-    F_estimate = F_estimate/len(node_messages)
     return F_estimate

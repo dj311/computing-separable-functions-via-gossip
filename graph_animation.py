@@ -11,10 +11,29 @@ class GraphAnimation(object):
         self.fps = fps
 
     def add_frame(self, graph, node_positions, node_colors):
+        num_frames = len(self.frames) + 1
+
+        print("-----------------------------------------------------------")
+        for i in range(20):
+            print(" ".join(["%6.0f"%node_colors[i*20+j] for j in range(20)]))
+
         # convert node colors to black and white
         node_colors = [
-            matplotlib.colors.to_rgb((color/255, color/255, color/255))
-            for color in node_colors
+            (
+                1 - color/255,
+                20,
+                color/255,
+            ) for color in node_colors
+        ]
+
+        # make sure rounding errors don't messup color bounds of [0, 1]
+        node_colors = [
+            matplotlib.colors.to_rgb((
+                min(1.0, max(0.0, r)),
+                min(1.0, max(0.0, g)),
+                min(1.0, max(0.0, b)),
+            ))
+            for r, g, b in node_colors
         ]
 
         axes = matplotlib.axes.Axes(self.figure, (0, 0, 1, 1))

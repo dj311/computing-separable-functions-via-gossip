@@ -50,8 +50,14 @@ graph = networkx.convert_node_labels_to_integers(graph)
 animation = graph_animation.GraphAnimation(fps=10)
 animation.add_frame(graph, node_positions, node_colors)
 
-def handle_estimate_update(node_colors):
-    animation.add_frame(graph, node_positions, node_colors)
+def handle_estimate_update(sum_estimates, num_nodes_estimates):
+    estimates = [
+        sum_estimate/num_nodes_estimate
+        for sum_estimate, num_nodes_estimate
+        in zip(sum_estimates, num_nodes_estimates)
+    ]
+
+    animation.add_frame(graph, node_positions, estimates)
 
 algorithm.comp(
     graph,

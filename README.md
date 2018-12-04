@@ -6,6 +6,9 @@ Implementation of the algorithm in "Computing separable functions via gossip." [
 [<img src="./demo-image.png">](https://daniel.wilshirejones.com/res/animation_light.mp4)
 [(dark)](https://daniel.wilshirejones.com/res/animation_dark.mp4)
 
+### Handling Network Partitions
+TODO
+
 ## Setup
 For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be installed and working on your system. Besides that, it's the usual Python affair:
   1. Make a virtualenv: `python3 -m venv env`.

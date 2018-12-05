@@ -15,12 +15,13 @@ Implementation of the algorithm in "Computing separable functions via gossip." [
 ## Setup
 For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be installed and working on your system. Besides that, it's the usual Python affair:
   1. Make a virtualenv: `python3 -m venv env`.
-  2. Install dependencies: `pip install -r requirements.txt`.
+  2. Activate the virtualenv in your fave shell: `source ./env/bin/activate`.
+  3. Install dependencies: `pip install -r requirements.txt`.
 
 ## Generating the Demo
-  1. Activate the virtualenv in your fave shell: `source ./env/bin/activate`.
+  1. Make sure the the virtualenv is active: `source ./env/bin/activate`.
   2. Run the demo script: `python3 ./averaging_colors.py`.
-  3. Wait a couple of minutes and the file `./averaging_colors.mp4` should appear.
+  3. Wait a couple of minutes and the file `./animation.mp4` should appear.
 
 ## Usage
 The code for the demo (averaging colors over a grid network) is separated out from the main algorithm implementation, which can be found in `algorithm.py`. You can import those functions in your own scripts if you're keen to play around.

@@ -7,8 +7,10 @@ Implementation of the algorithm in "Computing separable functions via gossip." [
 [(dark)](https://daniel.wilshirejones.com/res/animation_dark.mp4)
 
 ### Handling Network Partitions
-TODO
-
+This visualisation shows a grid network which has been partitioned and split across it's diagonal. Halfway through the simulation, a bridge forms between the two partitions. It shows the following properties quite nicely:
+  1. The blue partition displays some perturbations despite all of it's nodes starting with the exact same colour. This demonstrates the stochastic nature of using the emperical mean of a random variable to transfer information.
+  2. Despite there only being two connections between the partitions, they are able to reach a visual consensus relatively quickly.
+  
 ## Setup
 For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be installed and working on your system. Besides that, it's the usual Python affair:
   1. Make a virtualenv: `python3 -m venv env`.

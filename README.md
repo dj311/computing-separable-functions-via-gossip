@@ -10,6 +10,7 @@ Implementation of the algorithm in "Computing separable functions via gossip." [
 [This visualisation](https://daniel.wilshirejones.com/res/animation_partitions.mp4) shows a grid network which has been partitioned and split across it's diagonal. Once the inidividual partitions are close to consensus, a bridge forms between them. It shows the following properties quite nicely:
   1. The blue partition displays some perturbations despite all of it's nodes starting with the exact same colour. 
       - This demonstrates the stochastic nature of using the emperical mean of a random variable to transfer information.
+      - In the simulation, blue is represented by the number 1, and yellow the number 255. Since the estimation is made by taking the inverse of the emperical mean, it is possible that similar sized fluctuations in blue and yellow have a bigger relative effect on blue.
   2. Despite there only being two connections between the partitions, they are able to reach a (visual) consensus relatively quickly.
   3. The algorithm (running on individual nodes) is resilient to network partitions and failures. 
       - Since the method described in the paper _does_ have a significant performance penalty compared to a centralised approach, it is important to demonstrate it's advantages.

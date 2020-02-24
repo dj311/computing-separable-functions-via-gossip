@@ -1,6 +1,8 @@
 # Computing Separable Functions via Gossip
 
-Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network.
+Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network. See our [presentation](Computing Separable Functions via Gossip.pdf) for a quick explanation, though it's missing key parts which were otherwise delivered via speech! The paper [1] itself is probably worth a read.
+
+This was written on a tight deadline ahead of presentation and the code quality reflects that. One day I'd like to rewrite this algorithm with a focus on individual nodes as actors in the simulation. I think that would better communicate the algorithm. For now, apologies for the sad state of the code!
 
 ## Demo
 [<img src="./demo-image.png">](https://daniel.wilshirejones.com/res/animation_light.mp4)
@@ -28,8 +30,6 @@ For the video output to work, [ffmpeg](https://www.ffmpeg.org/) should be instal
 
 ## Usage
 The code for the demo (averaging colors over a grid network) is separated out from the main algorithm implementation, which can be found in `algorithm.py`. You can import those functions in your own scripts if you're keen to play around.
-
-The code is in a pretty sad state, apologies!
 
 ## References
 

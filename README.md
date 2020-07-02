@@ -1,6 +1,6 @@
 # Computing Separable Functions via Gossip
 
-Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a network. See our [presentation](Computing Separable Functions via Gossip.pdf) for a quick explanation, though it's missing key parts which were otherwise delivered via speech.
+Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a network. See our [presentation](./Computing%20Separable%20Functions%20via%20Gossip.pdf) for a quick explanation, though it's missing key parts which were otherwise delivered via speech.
 
 The paper [1] itself is probably worth a read. It provides an algorithm for calculating (separable) functions over a network when each node starts with a single part of the function we want to calculate. In this scenario, nodes are only aware of (and can only communicate with) there direct neighbours, and they don't have unique identifiers. The authors developed an algorithm that each node in the network runs to share information, and calculate the function. They then prove that this algorithm completes in a bounded time. The algorithm utilises a property of exponential random variables in a pretty cool way!
 

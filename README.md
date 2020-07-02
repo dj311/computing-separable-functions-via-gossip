@@ -4,13 +4,14 @@ Implementation of the algorithm in "Computing separable functions via gossip." [
 
 The paper [1] itself is probably worth a read. It provides an algorithm for calculating (separable) functions over a network when each node starts with a single part of the function we want to calculate. In this scenario, nodes are only aware of (and can only communicate with) there direct neighbours, and they don't have unique identifiers. The authors developed an algorithm that each node in the network runs to share information, and calculate the function. They then prove that this algorithm completes in a bounded time. The algorithm utilises a property of exponential random variables in a pretty cool way!
 
-/Note:/ This was written on a tight deadline ahead of presentation and the code quality reflects that. One day I'd like to rewrite this algorithm with a focus on individual nodes as actors in the simulation. I think that would better communicate how the agorithm works from the point of view of an individual node. For now, apologies for the sad state of the code!
+_Note:_ This was written on a tight deadline ahead of presentation and it's code quality reflects that. Unfortunately that means the code should be understandable if you already grok the algorithm in the paper, but it is unlikely that reading this will help you understand it. One day I'd like to rewrite this algorithm with a focus on individual nodes as actors in the simulation. I reckon reading the algorithm from the point of view of an individual node _would_ help with understanding.
 
 ## Demo
 
 In these demonstrations the color of each node is represented by a single value ranging from 0 (yellow) to 1 (blue). At each iteration nodes spread information about their color to direct neighbours. Each node then updates their local estimate of the networks average color. Calculating an average is not actually separable so we estimate two separate values that are. The first is the number of nodes and the second is the sum of all nodes color values. These are both separable, and we can calculate the average color with `<total color value>/<number of nodes>`. 
 
 This first demo shows a group of nodes arranged in a grid/lattice. As time goes on, the nodes estimates converge on an accurate value. 
+
 [<img src="./demo-image.png">](https://daniel.wilshirejones.com/res/animation_light.mp4)
 [(dark)](https://daniel.wilshirejones.com/res/animation_dark.mp4)
 

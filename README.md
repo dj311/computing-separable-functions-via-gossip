@@ -1,10 +1,16 @@
 # Computing Separable Functions via Gossip
 
-Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a grid network. See our [presentation](Computing Separable Functions via Gossip.pdf) for a quick explanation, though it's missing key parts which were otherwise delivered via speech! The paper [1] itself is probably worth a read.
+Implementation of the algorithm in "Computing separable functions via gossip." [1] applied to the mixing of colours in a network. See our [presentation](Computing Separable Functions via Gossip.pdf) for a quick explanation, though it's missing key parts which were otherwise delivered via speech.
 
-This was written on a tight deadline ahead of presentation and the code quality reflects that. One day I'd like to rewrite this algorithm with a focus on individual nodes as actors in the simulation. I think that would better communicate the algorithm. For now, apologies for the sad state of the code!
+The paper [1] itself is probably worth a read. It provides an algorithm for calculating (separable) functions over a network when each node starts with a single part of the function we want to calculate. In this scenario, nodes are only aware of (and can only communicate with) there direct neighbours, and they don't have unique identifiers. The authors developed an algorithm that each node in the network runs to share information, and calculate the function. They then prove that this algorithm completes in a bounded time. The algorithm utilises a property of exponential random variables in a pretty cool way!
+
+/Note:/ This was written on a tight deadline ahead of presentation and the code quality reflects that. One day I'd like to rewrite this algorithm with a focus on individual nodes as actors in the simulation. I think that would better communicate how the agorithm works from the point of view of an individual node. For now, apologies for the sad state of the code!
 
 ## Demo
+
+In these demonstrations the color of each node is represented by a single value ranging from 0 (yellow) to 1 (blue). At each iteration nodes spread information about their color to direct neighbours. Each node then updates their local estimate of the networks average color. Calculating an average is not actually separable so we estimate two separate values that are. The first is the number of nodes and the second is the sum of all nodes color values. These are both separable, and we can calculate the average color with `<total color value>/<number of nodes>`. 
+
+This first demo shows a group of nodes arranged in a grid/lattice. As time goes on, the nodes estimates converge on an accurate value. 
 [<img src="./demo-image.png">](https://daniel.wilshirejones.com/res/animation_light.mp4)
 [(dark)](https://daniel.wilshirejones.com/res/animation_dark.mp4)
 
@@ -33,4 +39,4 @@ The code for the demo (averaging colors over a grid network) is separated out fr
 
 ## References
 
-[1]: Mosk-Aoyama, Damon, and Devavrat Shah. "Computing separable functions via gossip." Proceedings of the twenty-fifth annual ACM symposium on Principles of distributed computing. ACM, 2006.
+[1]: Mosk-Aoyama, Damon, and Devavrat Shah. "Computing separable functions via gossip." Proceedings of the twenty-fifth annual ACM symposium on Principles of distributed computing. ACM, 2006. [DOI: 10.1145/1146381.1146401](https://scholar.google.com/scholar?q=10.1145%2F1146381.1146401)
